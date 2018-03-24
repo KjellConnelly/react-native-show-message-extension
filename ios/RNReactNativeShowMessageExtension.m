@@ -9,7 +9,7 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(open: (RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(show: (RCTResponseSenderBlock)callback) {
   savedCallback = callback;
   UIViewController *topViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
 
