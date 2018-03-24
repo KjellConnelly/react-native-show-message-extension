@@ -1,5 +1,7 @@
 
-# react-native-react-native-show-message-extension
+# react-native-show-message-extension
+
+## Does not work yet. Still building initial version. Do Not Use Yet.
 
 ## Getting started
 
@@ -22,9 +24,8 @@
 
 ## Usage
 ```javascript
-import ShowMessageExtension from 'react-native-react-native-show-message-extension';
+import ShowMessageExtension from 'react-native-show-message-extension';
 
 // TODO: What to do with the module?
 RNReactNativeShowMessageExtension;
 ```
-  

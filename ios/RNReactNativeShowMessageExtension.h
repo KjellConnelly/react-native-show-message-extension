@@ -5,7 +5,8 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
+#import <Messages/Messages.h>
+
 @interface RNReactNativeShowMessageExtension : NSObject <RCTBridgeModule>
 
 @end
-  
