@@ -1,0 +1,19 @@
+
+{
+  "name": "react-native-react-native-show-message-extension",
+  "version": "1.0.0",
+  "description": "Shows your iMessage App Extension and delivers info to it. You must handle the code that is sent yourself though. iOS only.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "npm --no-git-tag-version version patch && git add . && git commit -am \"Next Version\" && git push && npm publish"
+  },
+  "keywords": [
+    "react-native", "message", "extension", "sticker", "react", "native", "imessage"
+  ],
+  "author": "Kjell Connelly",
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
