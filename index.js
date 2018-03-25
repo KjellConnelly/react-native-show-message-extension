@@ -6,4 +6,10 @@ export default class ShowMessageExtension {
   static show() {
     RNReactNativeShowMessageExtension.show()
   }
+
+  static canSendText(callback) {
+    RNReactNativeShowMessageExtension.canSendText(canSend=>{
+      callback(canSend)
+    })
+  }
 }

@@ -6,7 +6,8 @@
 #endif
 
 #import <Messages/Messages.h>
+#import <MessageUI/MessageUI.h>
 
-@interface RNReactNativeShowMessageExtension : NSObject <RCTBridgeModule>
+@interface RNReactNativeShowMessageExtension : NSObject <RCTBridgeModule, MFMessageComposeViewControllerDelegate>
 
 @end
