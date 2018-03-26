@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native'
 const { RNReactNativeShowMessageExtension } = NativeModules
 
 export default class ShowMessageExtension {
-  static show(inputOptions, onOpen, onClose) {
+  static async show(inputOptions) {
     let options = {
       message: {
         recipients: inputOptions.message ? (inputOptions.message.recipients || []) : [],
@@ -24,11 +24,15 @@ export default class ShowMessageExtension {
       }
     }
 
-    RNReactNativeShowMessageExtension.show(options, errorCode=>{
-      onOpen(errorCode)
-    }, onCloseResult=>{
-      // onCloseResult 0 = cancelled, 1 = sent, 2 = failed
-      onClose(onCloseResult)
+    return new Promise((resolve, reject)=>{
+      RNReactNativeShowMessageExtension.show(options, (errorCode, successCode)=>{
+        if (errorCode != null) {
+          reject(errorCode)
+        } else {
+          // successCode:  0 = cancelled, 1 = sent, 2 = failed
+          resolve(successCode)
+        }
+      })
     })
   }
 

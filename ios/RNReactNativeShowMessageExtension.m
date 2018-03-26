@@ -2,7 +2,7 @@
 #import "RNReactNativeShowMessageExtension.h"
 
 @implementation RNReactNativeShowMessageExtension
-RCTResponseSenderBlock savedOnClose;
+RCTResponseSenderBlock savedCallback;
 
 - (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
@@ -16,13 +16,13 @@ RCT_EXPORT_METHOD(canSendText: (RCTResponseSenderBlock)callback) {
   callback(@[canSendText]);
 }
 
-RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen : (RCTResponseSenderBlock)onClose) {
-  savedOnClose = onClose;
+RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callback) {
+  savedCallback = callback;
 
   if (![MFMessageComposeViewController canSendText]) {
     // 0 == cannot send text. Are you on simulator?
     NSLog(@"react-native-show-message-extension: Cannot send text on this device. Are you using the simulator?");
-    onOpen(@[@0]);
+    callback(@[@0, [NSNull null]]);
     return;
   }
 
@@ -57,11 +57,10 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
     [messageVC setMessage:message];
     [topViewController presentViewController:messageVC animated:true completion:^{
       // No error
-      onOpen(@[[NSNull null]]);
     }];
   } else {
     // 1 == no msmessage capability. iOS10+? Probably not.
-    onOpen(@[@1]);
+    callback(@[@1, [NSNull null]]);
     return;
   }
 }
@@ -80,9 +79,18 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
 - (NSURL *) getURLFromOptions : (NSDictionary *) options : (NSString *) firstKey : (NSString *) secondKey {
   if ([options objectForKey:firstKey] != nil) {
     NSDictionary *dict = [options objectForKey:firstKey];
-    if ([dict objectForKey:secondKey] != nil) {
-      NSString *urlAsString = [dict objectForKey:secondKey];
-      NSURL *url = [NSURL URLWithString:urlAsString];
+    NSString *filePath = (NSString *)[dict objectForKey:secondKey];
+    if (filePath != nil) {
+      NSString *bundlePath = [[NSBundle mainBundle] resourcePath];
+      NSString *path = [NSString stringWithFormat:@"%@/%@", bundlePath, filePath];
+      NSURL *url = [NSURL fileURLWithPath:path];
+
+      if (url == nil) {
+        if (![filePath isEqualToString:@""]) {
+          NSLog(@"react-native-show-message-extension error finding URL. To find the path to your asset, please provide a String with the URL from the app's bundle. To find this, open Xcode and navigate to Products > YourApp.app. Right-click it, and click 'Show in Finder'. In finder, right-click YourApp.app (extension may be hidden), and click 'Show Package Contents'. Navigate through here to find your asset file. Xcode assets will typically be on this root level. Packaged items will be in folders within the assets folder.");
+        }
+      }
+
       return url;
     }
   }
@@ -93,11 +101,10 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
 - (UIImage *) getUIImageFromOptions : (NSDictionary *) options : (NSString *) firstKey : (NSString *) secondKey {
   if ([options objectForKey:firstKey] != nil) {
     NSDictionary *dict = [options objectForKey:firstKey];
-    if ([dict objectForKey:secondKey] != nil) {
-      NSString *imagePath = (NSString *)[dict objectForKey:secondKey];
+    NSString *imagePath = (NSString *)[dict objectForKey:secondKey];
+    if (imagePath != nil) {
       NSString *bundlePath = [[NSBundle mainBundle] resourcePath];
       NSString *path = [NSString stringWithFormat:@"%@/%@", bundlePath, imagePath];
-      NSLog(@"Path: %@", path);
       UIImage *img = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:path]]];
 
       if (img == nil) {
@@ -138,7 +145,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
   [controller dismissViewControllerAnimated:YES completion:^{
     // successfully opened and closed
-    savedOnClose(@[[NSNull null], @(result)]);
+    savedCallback(@[[NSNull null], @(result)]);
   }];
 }
 
