@@ -1,7 +1,10 @@
 
 # react-native-show-message-extension
 
-## Does not work yet. Still building initial version. Do Not Use Yet.
+## What this Module is for
+1. If you have an iOS Message Extension and want to be able to send a MSMessage from within your React-Native app.
+2. Right now, you can only send some basic data such as a text, an image, or a file such as mp3 or video.
+3. This module only prefills some things for a text message to be sent. It doesn't actually open your Message Extension. I wish it did, but it turns out this currently isn't possible.
 
 ## Getting started
 
@@ -25,10 +28,132 @@
 1. If you try to use this on the Simulator, it will not work as ```MFMessageComposeViewController``` will not open on the Simulator. So you must build on a real device to test this module.
 2. If you want to attach an image, you will need to use an image path. To do this, you need to view the structure of your app's bundle. Xcode will normally only allow for everything on the root level, so giving just an image name works. But the React Native Packager allows for multiple assets with the same name as long as they're in different folders. So you must navigate your Product's filesystem to find the path created. (This is to send images that your app has, not remote images, or images that your extension as bundled.)
 
-## Usage
+## Example
 ```javascript
-import ShowMessageExtension from 'react-native-show-message-extension';
+import ShowMessageExtension from 'react-native-show-message-extension'
 
-// TODO: What to do with the module?
-RNReactNativeShowMessageExtension;
+export default class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.options = {
+      message: {
+        recipients: ["4258857529"],
+        subject: "Check out this cool image", // Seems like this is the message that shows in the text
+        body: "",
+      },
+      layout: {
+        imagePath: "assets/images/icons/icon_156.png",
+        mediaFileURL: undefined, // you can technically put the same imagePath here instead of above and it'll work the same, But here you can add other assets like audio or video instead.
+        imageTitle: "Image Title",
+        imageSubtitle: "Image Subtitle",
+        caption: "Some Caption",
+        subcaption: "SubCaption",
+        trailingCaption: "Trailing Caption",
+        trailingSubcaption: "Trailing SubCaption",
+        accessibilityLabel: "Accessibility Label",
+        summaryText: "And to summarize...",
+        shouldExpire: false,
+      }
+    }
+
+    this.options2 = {
+      message: {
+        recipients: ["4258857529"],
+        subject: "Cool Email plz Read",
+        body: "",
+      },
+      layout: {
+        imagePath: undefined, // imagePath overrides mediaFileURL. So if you have both, only the image will show.
+        mediaFileURL: "assets/myAudio/mySong.mp3",
+        imageTitle: "Image Title",
+        imageSubtitle: "Image Subtitle",
+        caption: "Some Caption",
+        subcaption: "SubCaption",
+        trailingCaption: "Trailing Caption",
+        trailingSubcaption: "Trailing SubCaption",
+        accessibilityLabel: "Accessibility Label",
+        summaryText: "And to summarize...",
+        shouldExpire: true,
+      }
+    }
+  }
+
+  render() {
+    return (
+      <View>
+        <Button title={"Send Image"} onPress={async()=>{
+          try {
+            const successCode = await ShowMessageExtension.show(this.options)
+            // successCode: 0 = user pressed cancel, 1 = sent, 2 = failed
+          } catch(errorCode) {
+            // errorCode: 0 = cannot send text. Simulator? Something else?
+            // 1 = cannot create a MSMessage. Not iOS 10+?
+          }
+        }} />
+
+        <Button title={"Send MP3"} onPress={async()=>{
+          try {
+            const successCode = await ShowMessageExtension.show(this.options2)
+            // successCode: 0 = user pressed cancel, 1 = sent, 2 = failed
+          } catch(errorCode) {
+            // errorCode: 0 = cannot send text. Simulator? Something else?
+            // 1 = cannot create a MSMessage. Not iOS 10+?
+          }
+        }} />
+      </View>
+    )
+  }
+}
+```
+
+
+
+
+
+## Example 2: Check if user can send text before showing a button for them to press
+```javascript
+import ShowMessageExtension from 'react-native-show-message-extension'
+
+export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      // undefined while we check, false if we cannot, true if we can.
+      ableToSendText: undefined
+    }
+    this.options = {
+      message: {
+        subject: "Check out my icon!",
+      },
+      layout: {
+        imagePath: "assets/images/icons/icon_156.png",
+      }
+    }
+
+    ShowMessageExtension.canSendText(ableTo=>{
+      this.setState({ableToSendText:ableTo})
+    })
+  }
+
+  render() {
+    return (
+      <View>
+        {this.state.ableToSendText == true ?
+          <Button title={"Send App Icon"} onPress={async()=>{
+            try {
+              const successCode = await ShowMessageExtension.show(this.options)
+            } catch(errorCode) {
+
+            }
+          }} />
+          :
+          <Text>
+            {this.state.ableToSendText == false ? "Unable to send text using this device" : "..."}
+          </Text>
+        }
+      </View>
+    )
+  }
+}
 ```
