@@ -1,6 +1,6 @@
 {
   "name": "react-native-show-message-extension",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Shows your iMessage App Extension and delivers info to it. You must handle the code that is sent yourself though. iOS only.",
   "main": "index.js",
   "scripts": {
