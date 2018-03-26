@@ -43,7 +43,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
     message.shouldExpire = [self getBOOLFromOptionsDefaultIsFalse:options :@"layout" :@"shouldExpire"];
 
     // layout properties
-    msgLayout.image = [self getUIImageFromOptions:options :@"layout" :@"image"];
+    msgLayout.image = [self getUIImageFromOptions:options :@"layout" :@"imagePath"];
     msgLayout.mediaFileURL = [self getURLFromOptions:options :@"layout" :@"mediaFileURL"];
     msgLayout.imageTitle = [self getStringFromOptions:options :@"layout" :@"imageTitle"];
     msgLayout.imageSubtitle = [self getStringFromOptions:options :@"layout" :@"imageSubtitle"];
@@ -94,8 +94,18 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)onOpen 
   if ([options objectForKey:firstKey] != nil) {
     NSDictionary *dict = [options objectForKey:firstKey];
     if ([dict objectForKey:secondKey] != nil) {
-      NSString *imageName = (NSString *)[dict objectForKey:secondKey];
-      UIImage *img = [UIImage imageNamed:imageName];
+      NSString *imagePath = (NSString *)[dict objectForKey:secondKey];
+      NSString *bundlePath = [[NSBundle mainBundle] resourcePath];
+      NSString *path = [NSString stringWithFormat:@"%@/%@", bundlePath, imagePath];
+      NSLog(@"Path: %@", path);
+      UIImage *img = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:path]]];
+
+      if (img == nil) {
+        if (![imagePath isEqualToString:@""]) {
+          NSLog(@"react-native-show-message-extension error finding image. To find the path to your image, please provide a String with the URL from the app's bundle. To find this, open Xcode and navigate to Products > YourApp.app. Right-click it, and click 'Show in Finder'. In finder, right-click YourApp.app (extension may be hidden), and click 'Show Package Contents'. Navigate through here to find your image file. Xcode assets will typically be on this root level. Packaged items will be in folders within the assets folder.");
+        }
+      }
+
       return img;
     }
   }

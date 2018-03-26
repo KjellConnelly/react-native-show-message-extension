@@ -10,7 +10,7 @@ export default class ShowMessageExtension {
         body: inputOptions.message ? (inputOptions.message.body || "") : "",
       },
       layout: {
-        image: inputOptions.layout ? (inputOptions.layout.image || "") : "",
+        imagePath: inputOptions.layout ? (inputOptions.layout.imagePath || "") : "",
         mediaFileURL: inputOptions.layout ? (inputOptions.layout.mediaFileURL || "") : "",
         imageTitle: inputOptions.layout ? (inputOptions.layout.imageTitle || "") : "",
         imageSubtitle: inputOptions.layout ? (inputOptions.layout.imageSubtitle || "") : "",
