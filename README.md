@@ -3,7 +3,7 @@
 
 ## What this Module is for
 1. If you have an iOS Message Extension and want to be able to send a MSMessage from within your React-Native app.
-2. Right now, you can only send some basic data such as a text, an image, or a file such as mp3 or video.
+2. Right now, you can only send some basic data such as a text, a url (as stringified JSON to be processed by your native message extension), an image, or a file such as mp3 or video.
 3. This module only prefills some things for a text message to be sent. It doesn't actually open your Message Extension. I wish it did, but it turns out this currently isn't possible.
 
 ## Getting started
@@ -169,5 +169,23 @@ export default class App extends Component {
       </View>
     )
   }
+}
+```
+
+## Native Objective-C Example
+This example shows how you might go about handling a message's url to create data from yourself React-Native app, and be able to use this data when a user opens their Messages app and taps on a MSMessage that you sent.
+```objc
+// MessagesViewController.m, subclass of MSMessagesAppViewController
+-(void)didBecomeActiveWithConversation:(MSConversation *)conversation {
+  MSMessage *message = conversation.selectedMessage;
+  if (message == nil) { return; }
+  if (message.URL == nil) { return; }
+
+  NSString *jsonString = [message.URL.absoluteString stringByRemovingPercentEncoding];
+  // do something with JSON string such as parsing it
+  NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *dict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+  NSArray *toppings = dict[@"toppings"];
+  NSLog(@"User wants %i toppings", (int)toppings.count);
 }
 ```

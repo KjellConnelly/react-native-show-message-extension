@@ -40,8 +40,8 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
     messageVC.body = [self getStringFromOptions:options :@"message" :@"subject"];
 
     // MSMessage properties
+    message.URL = [self getURLFromOptionsJSONBased:options :@"message" :@"url"];
     message.shouldExpire = [self getBOOLFromOptionsDefaultIsFalse:options :@"layout" :@"shouldExpire"];
-    message.url = [self getURLFromOptionsJSONBased:options :@"message" :@"url"];
 
     // layout properties
     msgLayout.image = [self getUIImageFromOptions:options :@"layout" :@"imagePath"];
@@ -71,7 +71,8 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
     NSDictionary *dict = [options objectForKey:firstKey];
     if ([dict objectForKey:secondKey] != nil) {
       NSString *jsonString = (NSString *)[dict objectForKey:secondKey];
-      return [NSURL URLWithString:[jsonString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+      NSURL *convertURL = [RCTConvert NSURL:jsonString];
+      return convertURL;
     }
   }
 
