@@ -41,6 +41,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
 
     // MSMessage properties
     message.shouldExpire = [self getBOOLFromOptionsDefaultIsFalse:options :@"layout" :@"shouldExpire"];
+    message.url = [self getURLFromOptionsJSONBased:options :@"message" :@"url"];
 
     // layout properties
     msgLayout.image = [self getUIImageFromOptions:options :@"layout" :@"imagePath"];
@@ -63,6 +64,18 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
     callback(@[@1, [NSNull null]]);
     return;
   }
+}
+
+- (NSURL *) getURLFromOptionsJSONBased : (NSDictionary *) options : (NSString *) firstKey : (NSString *) secondKey {
+  if ([options objectForKey:firstKey] != nil) {
+    NSDictionary *dict = [options objectForKey:firstKey];
+    if ([dict objectForKey:secondKey] != nil) {
+      NSString *jsonString = (NSString *)[dict objectForKey:secondKey];
+      return [NSURL URLWithString:[jsonString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    }
+  }
+
+  return nil;
 }
 
 - (BOOL) getBOOLFromOptionsDefaultIsFalse : (NSDictionary *) options : (NSString *) firstKey : (NSString *) secondKey {

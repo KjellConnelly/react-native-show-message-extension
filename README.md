@@ -37,11 +37,23 @@ export default class App extends Component {
   constructor(props) {
     super(props)
 
+    // maybe your extension is a pizza app, and you want to pass data that your app can handle.
+    // do it with options.message.url (Javascript object that is stringified)
+    const pizzaData = {
+      size:"Large",
+      toppings:[
+        {name:"Pepperoni", count:"1"},
+        {name:"Mozzarella", count:"2"},
+        {name:"Basil", count:"1"},
+      ]
+    }
+
     this.options = {
       message: {
         recipients: ["4258857529"],
         subject: "Check out this cool image", // Seems like this is the message that shows in the text
         body: "",
+        url:JSON.stringify(pizzaData),
       },
       layout: {
         imagePath: "assets/images/icons/icon_156.png",
@@ -63,6 +75,7 @@ export default class App extends Component {
         recipients: ["4258857529"],
         subject: "Cool Email plz Read",
         body: "",
+        url:JSON.stringify(pizzaData),
       },
       layout: {
         imagePath: undefined, // imagePath overrides mediaFileURL. So if you have both, only the image will show.

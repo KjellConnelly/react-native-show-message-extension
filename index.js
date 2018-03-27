@@ -8,6 +8,7 @@ export default class ShowMessageExtension {
         recipients: inputOptions.message ? (inputOptions.message.recipients || []) : [],
         subject: inputOptions.message ? (inputOptions.message.subject || "") : "",
         body: inputOptions.message ? (inputOptions.message.body || "") : "",
+        url: inputOptions.message ? (inputOptions.message.url || "") : "",
       },
       layout: {
         imagePath: inputOptions.layout ? (inputOptions.layout.imagePath || "") : "",
