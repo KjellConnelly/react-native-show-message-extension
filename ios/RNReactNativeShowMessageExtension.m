@@ -28,7 +28,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
 
   if (NSClassFromString(@"MSMessage")) {
 
-    UIViewController *topViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    UIViewController *topViewController = [self topViewController];//[[[UIApplication sharedApplication] keyWindow] rootViewController];
     MFMessageComposeViewController *messageVC = [[MFMessageComposeViewController alloc] init];
     [messageVC setMessageComposeDelegate:self];
     MSMessageTemplateLayout *msgLayout = [[MSMessageTemplateLayout alloc] init];
@@ -140,6 +140,26 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)options: (RCTResponseSenderBlock)callbac
   }
 
   return nil;
+}
+
+- (UIViewController *)topViewController{
+  return [self topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+}
+
+- (UIViewController *)topViewController:(UIViewController *)rootViewController
+{
+  if (rootViewController.presentedViewController == nil) {
+    return rootViewController;
+  }
+
+  if ([rootViewController.presentedViewController isMemberOfClass:[UINavigationController class]]) {
+    UINavigationController *navigationController = (UINavigationController *)rootViewController.presentedViewController;
+    UIViewController *lastViewController = [[navigationController viewControllers] lastObject];
+    return [self topViewController:lastViewController];
+  }
+
+  UIViewController *presentedViewController = (UIViewController *)rootViewController.presentedViewController;
+  return [self topViewController:presentedViewController];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
