@@ -8,10 +8,14 @@
 
 ## Getting started
 
-`$ npm install react-native-show-message-extension --save`
+`$ npm i react-native-show-message-extension`
 
 ### Mostly automatic installation
 
+##### New Way (with pod)
+`$ cd ios && pod install && cd ../`
+
+##### Old Way
 `$ react-native link react-native-show-message-extension`
 
 ### Manual installation
