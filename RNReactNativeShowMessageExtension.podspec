@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.license      = package['license']
   s.author       = { "author" => package['author']['name'] }
   s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/author/RNReactNativeShowMessageExtension.git", :branch => "master" :tag => "v#{s.version}" }
+  s.source       = { :git => "https://github.com/author/RNReactNativeShowMessageExtension.git", :branch => "master", :tag => "v#{s.version}" }
   s.source_files = "ios/*.{h,m}"
   s.requires_arc = true
 
