@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "RNReactNativeShowMessageExtension"
-  s.version      = "1.0.15"
+  s.version      = "1.0.19"
   s.summary      = "RNReactNativeShowMessageExtension"
   s.description  = <<-DESC
                   Shows your iMessage App Extension and delivers info to it. You must handle the code that is sent yourself though. iOS only.
